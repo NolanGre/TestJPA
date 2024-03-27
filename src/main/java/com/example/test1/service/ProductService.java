@@ -1,5 +1,7 @@
 package com.example.test1.service;
 
+import com.example.test1.repo.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.test1.model.Product;
 
@@ -9,34 +11,28 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-    private final List<Product> productList;
-    private static long ID = 1;
 
-    public ProductService() {
-        productList = new ArrayList<>();
+    private final ProductRepository productRepository;
+
+    @Autowired
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public void registerNewProduct(Product product) {
-        product.setId(ID++);
-        productList.add(product);
+        productRepository.saveAndFlush(product);
     }
 
     public Optional<Product> getProductById(long productId) {
-        return productList.stream()
-                .filter(element -> element.getId() == productId)
-                .findFirst();
+        return productRepository.findById(productId);
     }
 
-    public boolean updateProduct(Product product) {
-        if (productList.removeIf(p -> p.getId() == product.getId())) {
-            productList.add(product);
-            return true;
-        }
-        return false;
+    public void updateProduct(Product product) {
+        productRepository.saveAndFlush(product);
     }
 
-    public boolean removeProduct(long productId) {
-        return productList.removeIf(product -> product.getId() == productId);
+    public void removeProduct(long productId) {
+        productRepository.deleteById(productId);
     }
 }
 

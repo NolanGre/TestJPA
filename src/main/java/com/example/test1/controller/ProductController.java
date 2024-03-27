@@ -32,14 +32,14 @@ public class ProductController {
     }
 
     @PutMapping("/product/update")
-    public ResponseEntity<Void> updateProduct(@RequestBody Product product) {
-        return (productService.updateProduct(product)) ?
-                ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+        productService.updateProduct(product);
+        return ResponseEntity.ok(product);
     }
 
     @DeleteMapping("/product")
     public ResponseEntity<Void> deleteProduct(@RequestParam(name = "productId") long productId) {
-        return (productService.removeProduct(productId)) ?
-                ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        productService.removeProduct(productId);
+        return ResponseEntity.noContent().build();
     }
 }

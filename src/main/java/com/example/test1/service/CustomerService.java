@@ -1,5 +1,7 @@
 package com.example.test1.service;
 
+import com.example.test1.repo.CustomerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.test1.model.Customer;
 
@@ -9,33 +11,27 @@ import java.util.Optional;
 
 @Service
 public class CustomerService {
-    private final List<Customer> customerList;
-    private static long ID = 1;
 
-    public CustomerService() {
-        customerList = new ArrayList<>();
+    private final CustomerRepository customerRepository;
+
+    @Autowired
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     public void registerNewCustomer(Customer customer) {
-        customer.setId(ID++);
-        customerList.add(customer);
+        customerRepository.saveAndFlush(customer);
     }
 
     public Optional<Customer> getCustomerById(long customerId) {
-        return customerList.stream()
-                .filter(element -> element.getId() == customerId)
-                .findFirst();
+        return customerRepository.findById(customerId);
     }
 
-    public boolean updateCustomer(Customer customer) {
-        if (customerList.removeIf(c -> c.getId() == customer.getId())) {
-            customerList.add(customer);
-            return true;
-        }
-        return false;
+    public void updateCustomer(Customer customer) {
+        customerRepository.saveAndFlush(customer);
     }
 
-    public boolean removeCustomer(long customerId) {
-        return customerList.removeIf(customer -> customer.getId() == customerId);
+    public void removeCustomer(long customerId) {
+        customerRepository.deleteById(customerId);
     }
 }

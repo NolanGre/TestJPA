@@ -32,14 +32,14 @@ public class CustomerController {
     }
 
     @PutMapping("/customer/update")
-    public ResponseEntity<Void> updateProduct(@RequestBody Customer customer) {
-        return (customerService.updateCustomer(customer)) ?
-                ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    public ResponseEntity<Customer> updateProduct(@RequestBody Customer customer) {
+        customerService.updateCustomer(customer);
+        return ResponseEntity.ok(customer);
     }
 
     @DeleteMapping("/customer")
     public ResponseEntity<Void> deleteCustomer(@RequestParam(name = "customerId") long customerId) {
-        return (customerService.removeCustomer(customerId)) ?
-                ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        customerService.removeCustomer(customerId);
+        return ResponseEntity.noContent().build();
     }
 }
